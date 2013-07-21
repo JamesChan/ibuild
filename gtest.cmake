@@ -62,6 +62,8 @@ function(add_gtest)
   catkin_add_gtest(${ARGN})
 endfunction()
 
+set(GTEST_SOURCE_SEARCHING_DIR ${CMAKE_SOURCE_DIR} CACHE INTERNAL "")
+
 find_package(GTest QUIET)
 if(NOT GTEST_FOUND)
   # only add gtest directory once per workspace
@@ -69,14 +71,17 @@ if(NOT GTEST_FOUND)
     find_file(_CATKIN_GTEST_SRC "gtest.cc"
       PATHS
       # search in the current workspace
-      "${CMAKE_SOURCE_DIR}/gtest/src"
+      "${GTEST_SOURCE_SEARCHING_DIR}/gtest/src"
+      "${GTEST_SOURCE_SEARCHING_DIR}/tools/gtest/src"
       # fall back to system installed path (i.e. on Ubuntu)
       "/usr/src/gtest/src"
       NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+
     find_file(_CATKIN_GTEST_INCLUDE "gtest/gtest.h"
       PATHS
       # search in the current workspace
-      "${CMAKE_SOURCE_DIR}/gtest/include"
+      "${GTEST_SOURCE_SEARCHING_DIR}/gtest/include"
+      "${GTEST_SOURCE_SEARCHING_DIR}/tools/gtest/include"
       # fall back to system installed path (i.e. on Ubuntu)
       "/usr/include/gtest"
       NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -84,8 +89,8 @@ if(NOT GTEST_FOUND)
     message(STATUS "_CATKIN_GTEST_INCLUDE: '${_CATKIN_GTEST_INCLUDE}'")
 
     if(_CATKIN_GTEST_SRC)
-      get_filename_component(_CATKIN_GTEST_SOURCE_DIR ${_CATKIN_GTEST_SRC} PATH)
-      get_filename_component(_CATKIN_GTEST_BASE_DIR ${_CATKIN_GTEST_SOURCE_DIR} PATH)
+      get_filename_component(_CATKIN_GTEST_SOURCE_SEARCHING_DIR ${_CATKIN_GTEST_SRC} PATH)
+      get_filename_component(_CATKIN_GTEST_BASE_DIR ${_CATKIN_GTEST_SOURCE_SEARCHING_DIR} PATH)
       # add CMakeLists.txt from gtest dir
       set(_CATKIN_GTEST_BINARY_DIR ${CMAKE_BINARY_DIR}/gtest)
       add_subdirectory(${_CATKIN_GTEST_BASE_DIR} ${_CATKIN_GTEST_BINARY_DIR})
