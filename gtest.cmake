@@ -40,9 +40,11 @@ function(catkin_add_gtest target)
   include_directories(${GTEST_INCLUDE_DIRS})
   message(STATUS "GTEST_INCLUDE_DIRS:" ${GTEST_INCLUDE_DIRS})
   link_directories(${GTEST_LIBRARY_DIRS})
+  message(STATUS "GTEST_LIBRARY_DIRS:" ${GTEST_LIBRARY_DIRS})
   add_executable(${target} EXCLUDE_FROM_ALL ${_gtest_UNPARSED_ARGUMENTS})
   assert(GTEST_LIBRARIES)
-  target_link_libraries(${target} ${GTEST_LIBRARIES} ${THREADS_LIBRARY})
+  message(STATUS "GTEST_LIBRARIES:" ${GTEST_LIBRARIES})
+  target_link_libraries(${target} ${GTEST_BOTH_LIBRARIES} ${THREADS_LIBRARY})
 
   # make sure gtest is built before the test target
   add_dependencies(${target} gtest gtest_main)
@@ -78,6 +80,8 @@ if(NOT GTEST_FOUND)
       # fall back to system installed path (i.e. on Ubuntu)
       "/usr/include/gtest"
       NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    
+    message(STATUS "_CATKIN_GTEST_INCLUDE: '${_CATKIN_GTEST_INCLUDE}'")
 
     if(_CATKIN_GTEST_SRC)
       get_filename_component(_CATKIN_GTEST_SOURCE_DIR ${_CATKIN_GTEST_SRC} PATH)
@@ -88,6 +92,10 @@ if(NOT GTEST_FOUND)
       # mark gtest targets with EXCLUDE_FROM_ALL to only build when tests are built which depend on them
       set_target_properties(gtest gtest_main PROPERTIES EXCLUDE_FROM_ALL 1)
       get_filename_component(_CATKIN_GTEST_INCLUDE_DIR ${_CATKIN_GTEST_INCLUDE} PATH)
+      get_filename_component(_CATKIN_GTEST_INCLUDE_DIR ${_CATKIN_GTEST_INCLUDE_DIR} PATH)
+      
+      message(STATUS "_CATKIN_GTEST_INCLUDE_DIR: '${_CATKIN_GTEST_INCLUDE_DIR}'")
+      
       # set from-source variables
       set(GTEST_FROM_SOURCE_FOUND TRUE CACHE INTERNAL "")
       set(GTEST_FROM_SOURCE_INCLUDE_DIRS ${_CATKIN_GTEST_INCLUDE_DIR} CACHE INTERNAL "")
