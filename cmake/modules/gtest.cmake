@@ -62,7 +62,6 @@ function(add_gtest)
   catkin_add_gtest(${ARGN})
 endfunction()
 
-set(GTEST_SOURCE_SEARCHING_DIR ${CMAKE_SOURCE_DIR} CACHE INTERNAL "")
 
 find_package(GTest QUIET)
 if(NOT GTEST_FOUND)
